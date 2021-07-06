@@ -1,0 +1,3 @@
+#!/bin/sh
+
+zip "$1".zip --move -r "$1"

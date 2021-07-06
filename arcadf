@@ -1,0 +1,16 @@
+#!/bin/sh
+
+desc="Amiga floppy disk image to zip archive tool"
+usage="usage: `basename $0` <source.adf> <archive basename>"
+
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+	echo $desc
+	echo $usage
+	exit
+elif [[ -f "$1" ]] && [[ -n "$2" ]]; then
+	extractadf "$1" "$2" && zipdir "$2"
+else
+	echo "Not enough or invalid arguments"
+	echo $usage
+	exit
+fi
