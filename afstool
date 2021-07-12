@@ -231,7 +231,7 @@ usage() {
 
 version() {
 	cat <<-EOF
-	adfs $VERSION
+	afstool $VERSION
 	Commadore Amiga filesystem interaction shell script for GNU/Linux
 	
 	Copyright (c) 2021 Kriss Wiggins
