@@ -39,11 +39,25 @@ ARCHIVER=zip
 MNTPREFIX=$HOME/.mnt
 
 #################
-#	 Tools		#
+#  Environment	#
 #################
 
+getsh() {
+	# $1: output variable
+	local -n ref=$1
+	ref=$( head -n 1 $(realpath "$0") | cut -d'!' -f2 ) \
+		|| ref="$(which bash)" 							\
+		|| ref="sh"
+}
+
+
+getsh SH
 [ -n "${SUDO_USER-}" ] 	&& USER=$SUDO_USER
 [ -z "${SUDO-}" ]		&& SUDO=sudo
+
+#################
+#	 Tools		#
+#################
 
 exec_user() {
 	# $1: command, $2: args, $3: use sudo (bool)
@@ -67,7 +81,7 @@ get_filesystems() {
 	local FS_MOD=/lib/modules/$RELEASE/kernel/fs
 	if [ -f $FS_PROC ]; then
 		[ -d $FS_MOD ] ||
-			echo "Could not find kernel module directory for filesystem driver checking. \
+			echo "Could not find kernel module directory for filesystem driver checks. \
 					Continuing..." >&2
 		local ref=$(cat $FS_PROC		| \
 					awk '{print $NF}' 	| \
@@ -110,7 +124,7 @@ update_attrs() {
 	if [ $USE_SUDO ]; then
 		local SUBNAME="_update_chmod"
 		local FUNC=$(declare -f $SUBNAME)
-		sudo bash -c "$FUNC; $SUBNAME '$DIR'"
+		sudo $SH -c "$FUNC; $SUBNAME '$DIR'"
 	else
 		_update_chmod "$DIR"
 	fi
