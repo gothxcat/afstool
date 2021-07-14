@@ -46,7 +46,7 @@ getsh() {
 	# $1: output variable
 	local -n ref=$1
 	ref=$( head -n 1 $(realpath "$0") | cut -d'!' -f2 ) \
-		|| ref="$(which bash)" 							\
+		|| ref="$(command -v bash)" 					\
 		|| ref="sh"
 }
 
@@ -135,8 +135,6 @@ archive_replacedir() {
 	local OUT="$2"
 	local PARENT_IN=$(dirname "$IN")
 	local BASENAME_IN=$(basename "$IN")
-	echo $PARENT_IN
-	echo $BASENAME_IN
 	(cd "$PARENT_IN" && $ARCHIVER --move -FS -r -q - "$BASENAME_IN") > "$OUT"
 	
 	[ -z "${SUDOUSER-}" ] || chown $USER:$USER "$OUT"
@@ -159,8 +157,8 @@ gen_mntpoint() {
 
 check_exec() {
 	# $1: executable name
-	local LOC=$(which "$1")
-	if [ ! $? ]; then
+	local LOC=$(command -v "$1")
+	if [ $? != 0 ]; then
 		echo "$LOC" >&2
 		return $?
 	fi
